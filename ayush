@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+    background: linear-gradient(45deg, #ff9a9e, #fad0c4);
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.container {
+    text-align: center;
+    margin-top: 100px;
+    animation: fadeIn 1.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.question {
+    font-size: 28px;
+    color: #ff4757;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.options button {
+    padding: 15px 30px;
+    margin: 15px;
+    font-size: 20px;
+    cursor: pointer;
+    border: none;
+    border-radius: 25px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+#yesBtn {
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    color: white;
+}
+
+#noBtn {
+    background: linear-gradient(45deg, #ff6b6b, #ff4757);
+    color: white;
+}
+
+#yesBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(79,172,254,0.4);
+}
+
+#noBtn:hover {
+    transform: translateX(100px) rotate(5deg);
+    box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+}
+
+.hearts {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+</style>
+</head>
+
+<body>
+
+<div class="hearts"></div>
+<div class="container">
+    <div class="question">Do you love me? ❤️</div>
+    <div class="options">
+        <button id="yesBtn">Yes</button>
+        <button id="noBtn">No</button>
+    </div>
+</div>
+
+<script>
+let noCount = 0;
+const noBtnPhrases = [
+    "Are you sure?",
+    "Please think again!",
+    "Don't do this to me!",
+    "Give me another chance!",
+    "My heart is breaking! 💔",
+    "Last chance to say yes!",
+    "You're breaking my heart! 😭",
+    "I'll cry! 😢",
+    "Don't be so mean! 🥺",
+    "You're hurting me! 💔"
+];
+
+// Function to create floating hearts
+function createHeart() {
+    const heart = document.createElement('div');
+    heart.innerHTML = '❤️';
+    heart.style.position = 'fixed';
+    heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+    heart.style.left = Math.random() * 100 + 'vw';
+    heart.style.top = '-20px';
+    heart.style.opacity = '0.8';
+    heart.style.animation = `float ${Math.random() * 3 + 2}s linear forwards`;
+    document.querySelector('.hearts').appendChild(heart);
+
+    setTimeout(() => heart.remove(), 5000);
+}
+
+// Add floating hearts animation
+const floatKeyframes = `
+@keyframes float {
+    to {
+        transform: translateY(100vh) rotate(${Math.random() * 360}deg);
+        opacity: 0;
+    }
+}`;
+const styleSheet = document.createElement('style');
+styleSheet.textContent = floatKeyframes;
+document.head.appendChild(styleSheet);
+
+// Create hearts periodically
+setInterval(createHeart, 300);
+
+document.getElementById('yesBtn').addEventListener('click', function() {
+    // Create heart burst effect
+    for(let i = 0; i < 50; i++) {
+        setTimeout(createHeart, i * 50);
+    }
+    
+    this.style.transform = 'scale(1.2)';
+    document.body.style.background = 'linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4, #ff9a9e)';
+    document.body.style.backgroundSize = '400% 400%';
+    document.body.style.animation = 'gradient 15s ease infinite';
+    
+    setTimeout(() => {
+        alert("I knew you loved me! ❤️ Thank you for being honest! 🥰");
+        window.location.href = "htlm.html";
+    }, 1000);
+});
+
+document.getElementById('noBtn').addEventListener('click', function(e) {
+    noCount++;
+    if (noCount < noBtnPhrases.length) {
+        document.querySelector('.question').textContent = noBtnPhrases[noCount - 1];
+        document.querySelector('.question').style.animation = 'shake 0.5s ease';
+    }
+    
+    // Make the No button harder to click by moving it randomly
+    const x = Math.random() * (window.innerWidth - this.offsetWidth);
+    const y = Math.random() * (window.innerHeight - this.offsetHeight);
+    this.style.position = 'absolute';
+    this.style.left = `${x}px`;
+    this.style.top = `${y}px`;
+    this.style.transform = `rotate(${Math.random() * 360}deg)`;
+    
+    // Make Yes button bigger and more attractive each time
+    const yesBtn = document.getElementById('yesBtn');
+    const currentScale = parseFloat(yesBtn.style.transform.replace('scale(', '').replace(')', '') || 1);
+    yesBtn.style.transform = `scale(${currentScale + 0.2})`;
+    yesBtn.style.boxShadow = `0 0 ${noCount * 5}px rgba(79,172,254,0.6)`;
+});
+
+// Add shake animation
+const shakeKeyframes = `
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}`;
+document.head.appendChild(document.createElement('style')).textContent = shakeKeyframes;
+
+// Add gradient animation
+const gradientKeyframes = `
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}`;
+document.head.appendChild(document.createElement('style')).textContent = gradientKeyframes;
+</script>
+
+</body>
+</html>
